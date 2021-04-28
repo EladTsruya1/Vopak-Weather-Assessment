@@ -2,19 +2,22 @@
     "AWSTemplateFormatVersion": "2010-09-09",
     "Description": "Vopak Assessment test.",
     "Resources": {
-        "EladTestLambda": {
+        "vopakWcorpWeather": {
             "Type": "AWS::Lambda::Function",
             "Properties": {
                 "Handler": "handler",
                 "Environment": {
                     "Variables" : {
-                        "PORT" : 8080
-                    }  
+                        
+                            "CONNECTION_STR": "mongodb+srv://admin:PGLTctZksCXESISy@vopaktemperaturdev.guxl4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
+                            "API_KEY":"9b27607a433344cea7503b2e8e1858c2",
+                            "CURRENT_WEATHER_URI": "https://api.weatherbit.io/v2.0/current"
+                    }   
                 },
-                "Role": "arn:aws:iam::137731921750:role/service-role/eladTest-role-qiw402ap",
+                "Role": "arn:aws:iam::137731921750:role/Vopak-Lambda",
                 "Code": {
                     "S3Bucket": "elad-lambda",
-                    "S3Key": "FirstDeploy.zip"
+                    "S3Key": "vopak-weather.zip"
                 },
                 "Runtime": "nodejs14.x",
                 "Timeout": 25,
@@ -22,6 +25,113 @@
                     "Mode": "Active"
                 }
             }
+        },
+        "vopakWcorpWeatherHttpApi": {
+            "Type": "AWS::ApiGatewayV2::Api",
+            "Properties": {
+                "Name": "vopakWcorpWeatherApi",
+                "Description": "This is Http Api Gateway for Vopak W-Corp-Weather assessment.",
+                "ProtocolType": "HTTP",
+                "CorsConfiguration" : {
+                    "AllowOrigins" : [ 
+                        "*" 
+                    ]
+                }
+             }
+        },
+        "VopakLambdaIntegration": {
+            "Type": "AWS::ApiGatewayV2::Integration",
+            "Properties": {
+                "ApiId": {
+                    "Ref": "vopakWcorpWeatherHttpApi"
+                },
+                "Description": "Lambda Integration",
+                "IntegrationType": "AWS_PROXY",
+                "IntegrationUri": {
+                    "Fn::GetAtt": [
+                        "vopakWcorpWeather",
+                        "Arn"
+                    ]
+                },
+                "PayloadFormatVersion": "2.0",
+                "IntegrationMethod": "GET",
+                "ConnectionType": "INTERNET"
+            }
+        },
+        "historicalTempRoute": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+                "ApiId": {
+                    "Ref": "vopakWcorpWeatherHttpApi"
+                },
+                "RouteKey": "GET /historical-temp",
+                "Target": {
+                    "Fn::Join": [
+                        "/",
+                        [
+                            "integrations",
+                            {
+                                "Ref": "VopakLambdaIntegration"
+                            }
+                        ]
+                    ]
+                }
+            }
+        },
+        "currentTempRoute": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+                "ApiId": {
+                    "Ref": "vopakWcorpWeatherHttpApi"
+                },
+                "RouteKey": "GET /current-temp",
+                "Target": {
+                    "Fn::Join": [
+                        "/",
+                        [
+                            "integrations",
+                            {
+                                "Ref": "VopakLambdaIntegration"
+                            }
+                        ]
+                    ]
+                }
+            }
+        },
+        "currentWeatherRoute": {
+            "Type": "AWS::ApiGatewayV2::Route",
+            "Properties": {
+                "ApiId": {
+                    "Ref": "vopakWcorpWeatherHttpApi"
+                },
+                "RouteKey": "GET /current-weather",
+                "Target": {
+                    "Fn::Join": [
+                        "/",
+                        [
+                            "integrations",
+                            {
+                                "Ref": "VopakLambdaIntegration"
+                            }
+                        ]
+                    ]
+                }
+            }
+        },
+        "defaultStage": {
+            "Type": "AWS::ApiGatewayV2::Stage",
+            "Properties": {
+                "StageName": "default",
+                "Description": "Default Stage",
+                "AutoDeploy": true,
+                "ApiId": {
+                    "Ref": "vopakWcorpWeatherHttpApi"
+                },
+                "DefaultRouteSettings": {
+                    "DetailedMetricsEnabled": true
+                }
+            }
         }
     }
 }
+
