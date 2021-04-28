@@ -1,0 +1,27 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Vopak Assessment test.",
+    "Resources": {
+        "EladTestLambda": {
+            "Type": "AWS::Lambda::Function",
+            "Properties": {
+                "Handler": "handler",
+                "Environment": {
+                    "Variables" : {
+                        "PORT" : 8080
+                    }  
+                },
+                "Role": "arn:aws:iam::137731921750:role/service-role/eladTest-role-qiw402ap",
+                "Code": {
+                    "S3Bucket": "elad-lambda",
+                    "S3Key": "FirstDeploy.zip"
+                },
+                "Runtime": "nodejs14.x",
+                "Timeout": 25,
+                "TracingConfig": {
+                    "Mode": "Active"
+                }
+            }
+        }
+    }
+}
