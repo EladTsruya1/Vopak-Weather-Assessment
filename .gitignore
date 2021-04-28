@@ -102,3 +102,17 @@ dist
 
 # TernJS port file
 .tern-port
+
+
+# dependencies
+node_modules
+
+# misc
+.DS_Store
+.eslintcache
+
+# local env
+.env
+
+# IDE
+.idea
