@@ -18,7 +18,7 @@ const mainHandler = async (event) => {
             result = await getAvgTempOfMonthHandler(params);
             break;
         case '/current-weather':
-            /*TODO:: Call handler.*/
+            /*TODO:: Call handdler.*/
             /* Triggered by AWS every 1h. */
             result = await fetchAndStoreWetherDataForAllLocationsHandler();
             break;
