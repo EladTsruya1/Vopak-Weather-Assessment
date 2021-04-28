@@ -9,9 +9,9 @@
                 "Environment": {
                     "Variables" : {
                         
-                            "CONNECTION_STR": "mongodb+srv://admin:PGLTctZksCXESISy@vopaktemperaturdev.guxl4.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
-                            "API_KEY":"9b27607a433344cea7503b2e8e1858c2",
-                            "CURRENT_WEATHER_URI": "https://api.weatherbit.io/v2.0/current"
+                            "CONNECTION_STR": <MONGO_CONNECTION_STR>,
+                            "API_KEY":<API_KEY>,
+                            "CURRENT_WEATHER_URI": <API_URI_FOR_CURRENT>
                     }   
                 },
                 "Role": "arn:aws:iam::137731921750:role/Vopak-Lambda",
