@@ -15,7 +15,7 @@ pipeline {
         stage('Build') {
             steps {
                 /*
-                    1) Create zip filer.
+                    1) Create zip file.
                     2) Upload the zip file to S3.
                     3) Update Cloudformation template. 
                 */
