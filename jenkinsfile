@@ -1,0 +1,30 @@
+#!/usr/bin/env groovy
+pipeline {
+    agent any
+    stages {
+        stage('Lint') {
+            steps {
+                sh 'npm install'
+            }
+        }
+        stage('Test') {
+            steps {
+                sh 'npm test'
+            }
+        }
+        stage('Build') {
+            steps {
+                /*
+                    1) Create zip file.
+                    2) Upload the zip file to S3.
+                    3) Update Cloudformation template. 
+                */
+            }
+        }
+        stage('Deploy') {
+            steps {
+                /*Deploy cloudformation template.*/ 
+            }
+        }
+    }
+}
